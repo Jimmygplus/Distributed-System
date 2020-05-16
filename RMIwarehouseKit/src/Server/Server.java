@@ -21,15 +21,15 @@ public class Server {
 		
 	}
 	
-	public void registerEmployee(String[] hostDetails) {
+	private void registerEmployee(String[] hostDetails) {
 		
 	}
 	
-	public void registerListener(String[] hostDetails){
+	private void registerListener(String[] hostDetails){
 		
 	}
 	
-	public void offline(String[] hostDetails){
+	public void offline(String[] userName) throws RemoteException{
 		
 	}
 	
