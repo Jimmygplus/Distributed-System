@@ -69,3 +69,104 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         } catch (RemoteException | MalformedURLException | NotBoundException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void sendToAll(String newMsg) {
+        for (ClientInterface c : employees) {
+            try {
+                c.messageFromServer(newMsg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void sendPrivate(String privateMessage, int[] privateGroup) {
+        ClientInterface individual;
+        for (int i : privateGroup) {
+            individual = employees.elementAt(i);
+            individual.messageFromServer(privateMessage);
+        }
+    }
+
+    private String[] getEmployeeList() {
+        String[] allEmployees = new String[employees.size()];
+        for (int i = 0; i < allEmployees.length; i++) {
+            allEmployees[i] = employees.elementAt(i).getName();
+        }
+        return allEmployees;
+    }
+
+    private String[] updateEmployeeList() {
+
+        String[] allUsers = new String[employees.size()];
+
+        for (int i = 0; i < allUsers.length; i++) {
+            allUsers[i] = employees.elementAt(i).getName();
+        }
+
+        return allUsers;
+    }
+
+    public void updateChattingList(String name, String context) {
+        String message = name + ":  " + context + "\n";
+        sendToAll(message);
+    }
+
+    public int getMaterial() {
+
+        return 0;
+    }
+
+    public int getProduct() {
+
+        return 0;
+    }
+
+    public void loadHistory() {
+
+    }
+
+    private void updateHistory() {
+
+    }
+
+    private void changeMaterial(int num) {
+
+    }
+
+    private void changeProduct(int num) {
+
+    }
+
+    public int getOrder(int a, int b) {
+        return 0;
+    }
+
+    @Override
+    public void registerListener(String[] hostDetails) throws RemoteException {
+        // TODO Auto-generated method stub
+        registerEmployee(hostDetails);
+    }
+
+    @Override
+    public void offline(String userName) throws RemoteException {
+        for (ClientInterface c : employees) {
+            if (c.getName().equals(userName)) {
+                System.out.println(userName + ":  I'm leaving");
+                employees.remove(c);
+                break;
+            }
+        }
+        if (!employees.isEmpty()) {
+            updateEmployeeList();
+        }
+    }
+
+    @Override
+    public void loadHistroy() {
+
+    }
+
+}
