@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="RMIProjectTest_git_dragahwalshe/Java-RMI-Chat/RMI_CHAT/src"/>
+	<classpathentry kind="src" path="RMItest/src"/>
+	<classpathentry kind="output" path="RMIProjectTest_git_dragahwalshe/Java-RMI-Chat/RMI_CHAT/bin"/>
+</classpath>
