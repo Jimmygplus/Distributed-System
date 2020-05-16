@@ -1,3 +1,6 @@
+/**
+ *
+ */
 package Server;
 
 import Client.Client;
@@ -9,7 +12,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.util.Vector;
-
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
     private static final long serialVersionUID = 1L;
@@ -58,13 +60,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     @SuppressWarnings("unused")
     private void registerEmployee(String[] hostDetails) {
         try {
-            ClientInterface nextClient = (ClientInterface) Naming.lookup("rmi://" + details[1] + "/" + details[2]);
+            ClientInterface nextClient = (ClientInterface) Naming.lookup("rmi://" + hostDetails[1] + "/" + hostDetails[2]);
 
             employees.addElement(nextClient);
 
-            nextClient.messageFromServer("[Boss] : " + details[0] + ", U R welcomed\n");
+            nextClient.receiveMessage("[Boss] : " + hostDetails[0] + ", U R welcomed\n");
 
-            sendToAll("[Boss] : " + details[0] + " is working.\n");
+            sendToAll("[Boss] : " + hostDetails[0] + " is working.\n");
 
             updateEmployeeList();
         } catch (RemoteException | MalformedURLException | NotBoundException e) {
@@ -76,7 +78,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     public void sendToAll(String newMsg) {
         for (ClientInterface c : employees) {
             try {
-                c.messageFromServer(newMsg);
+                c.receiveMessage(newMsg);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -87,7 +89,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         ClientInterface individual;
         for (int i : privateGroup) {
             individual = employees.elementAt(i);
-            individual.messageFromServer(privateMessage);
+            try {
+                individual.receiveMessage(privateMessage);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -15,7 +15,7 @@ public interface ServerInterface extends Remote {
 
     public void loadHistroy();
 
-    public void getOrder(int material, int product);
+    public int getOrder(int material, int product);
 
     public int getMaterial();
 
