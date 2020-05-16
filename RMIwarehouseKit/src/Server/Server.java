@@ -17,12 +17,29 @@ public class Server {
 
 	}
 
-	startRMIRegistry(): void
-	registerEmployee(String[]): void
-	registerListener(String[]): void
-	offline(String): void
-	sendToAll(String): void
-	sendPrivate(String, int[]): void
+	public void startRMIRegistry() {
+		
+	}
+	
+	public void registerEmployee(String[] hostDetails) {
+		
+	}
+	
+	public void registerListener(String[] hostDetails){
+		
+	}
+	
+	public void offline(String[] hostDetails){
+		
+	}
+	
+	public void sendToAll(String newMsg){
+		
+	}
+	
+	public void sendPrivate(String , int[]) {
+		
+	}
 	getEmployeeList(): String[]
 	updateEmployeeList(): void
 	updateChattingList(): void
