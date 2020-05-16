@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.util.Vector;
 
+
 public class Server extends UnicastRemoteObject implements ServerInterface {
     private static final long serialVersionUID = 1L;
     private Vector<ClientInterface> employees;
