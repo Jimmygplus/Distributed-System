@@ -136,4 +136,12 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     public void updateHistory() throws RemoteException {
 
     }
+
+    public void recreceiveMnP(int numberofM, int numberofP) throws RemoteException{
+
+    }
+
+    public void receiveHistory(String newRecord) throws RemoteException{
+
+    }
 }

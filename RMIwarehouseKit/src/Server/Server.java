@@ -26,6 +26,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     public Server() throws RemoteException {
         super();
         employees = new Vector<ClientInterface>(30, 1);
+        this.materialLock = new ReentrantReadWriteLock();
+        this.productLock = new ReentrantReadWriteLock();
+        this.historyLock = new ReentrantReadWriteLock();
     }
 
     /**
@@ -159,7 +162,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
         int numberofM = getMaterial();
         int numberofP = getProduct();
-        updateMnP(numberofM, numberofP);
+        try{
+            updateMnP(numberofM, numberofP);
+        }catch (RemoteException e){
+            e.printStackTrace();
+        }
+
+
         updateHistory(" " + EmploeeName + " offered " + typeName + " " + amount);
         return 1;
     }
@@ -214,7 +223,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         productLock.readLock().lock();
         String product = RWtxt.readTxt("product.txt");
         int productNumber = Integer.parseInt(product);
-        materialLock.readLock().unlock();
         productLock.readLock().unlock();
         return productNumber;
     }
@@ -225,10 +233,10 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         int productNumber = Integer.parseInt(product);
         productNumber += num;
         RWtxt.writeTxt("material.txt", String.valueOf(productNumber));
-        productLock.writeLock().lock();
+        productLock.writeLock().unlock();
     }
 
-    private void updateMnP(int numberofM, int numberofP) {
+    private void updateMnP(int numberofM, int numberofP) throws RemoteException{
         for (ClientInterface c : employees) {
             try {
                 c.recreceiveMnP(numberofM, numberofP);

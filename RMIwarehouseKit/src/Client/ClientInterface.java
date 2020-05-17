@@ -11,4 +11,9 @@ public interface ClientInterface extends Remote {
     public String getName() throws RemoteException;
 
     public void updateHistory() throws RemoteException;
+
+    public void recreceiveMnP(int numberofM, int numberofP) throws RemoteException;
+
+    public void receiveHistory(String newRecord)  throws RemoteException;
+
 }
