@@ -110,21 +110,24 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     @Override
     public void updateEmployeeList(String[] currentEmployees) throws RemoteException {
 
-        System.out.println(currentEmployees.length);
-
+        System.out.println("currentEmployees.length : " + currentEmployees.length);
+        /**/
         if (currentEmployees.length < 2) {
             clientGUIAfterLogin.privatesendButton.setEnabled(false);
         } else {
             clientGUIAfterLogin.privatesendButton.setEnabled(true);
         }
-        clientGUIAfterLogin.chatroom_panel.remove(clientGUIAfterLogin.onlineEmplouee_panel);
 
-        for(String s : currentEmployees){
+        //clientGUIAfterLogin.chatroom_panel.remove(clientGUIAfterLogin.onlineEmplouee_panel);
+        clientGUIAfterLogin.listModel.removeAllElements();
+        for (String s : currentEmployees) {
+            System.out.println(s);
             clientGUIAfterLogin.listModel.addElement(s);
         }
 
         clientGUIAfterLogin.onlineEmplouee_panel.repaint();
         clientGUIAfterLogin.onlineEmplouee_panel.revalidate();
+
     }
 
 
@@ -141,7 +144,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         this.ServerInterface.sendPrivate(pMessage, selectedIndex);
     }
 
-    public void getOrder(int type, int amount)throws RemoteException {
+    public void getOrder(int type, int amount) throws RemoteException {
         ServerInterface.getOrder(name, type, amount);
 
     }

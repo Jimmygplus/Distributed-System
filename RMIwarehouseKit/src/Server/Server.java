@@ -76,6 +76,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
             sendToAll("[Boss] : " + hostDetails[0] + " is working.\n");
 
+            System.out.println(hostDetails[0] + ", U R welcomed\n");
 
             updateEmployeeList();
         } catch (RemoteException | MalformedURLException | NotBoundException e) {

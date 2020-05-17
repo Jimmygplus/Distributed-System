@@ -23,6 +23,8 @@ public class ClientGUIAfterLogin {
     private JSpinner spinner_1, spinner_2;
     protected JList<String> list;
     protected DefaultListModel<String> listModel;
+
+    protected Client client;
     /**
      * Launch the application.
      */
@@ -43,6 +45,16 @@ public class ClientGUIAfterLogin {
      * Create the application.
      */
     public ClientGUIAfterLogin() {
+
+
+    }
+
+
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    public void Initialize() {
 
         frame = new JFrame();
         frame.setBounds(100, 100, 815, 670);
@@ -81,20 +93,19 @@ public class ClientGUIAfterLogin {
         chatroom_panel.add(chatDisplayArea);
 
         onlineEmplouee_panel = new JPanel();
-        onlineEmplouee_panel.setBounds(10, 74, 97, 194);
-        frame.getContentPane().add(onlineEmplouee_panel);
-        chatroom_panel.add(onlineEmplouee_panel, BorderLayout.CENTER);
+        onlineEmplouee_panel.setBounds(10, 74, 120, 194);
+        //frame.getContentPane().add(onlineEmplouee_panel);
+        chatroom_panel.add(onlineEmplouee_panel);
 
         listModel = new DefaultListModel<String>();
         list = new JList<String>(listModel);
-        //list.setBounds(10, 74, 97, 194);
+        list.setBounds(10, 74, 120, 194);
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         list.setVisibleRowCount(12);
 
         JScrollPane listScrollPane = new JScrollPane(list);
         listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        onlineEmplouee_panel.add(listScrollPane, BorderLayout.CENTER);
-        //chatroom_panel.add(listScrollPane, BorderLayout.CENTER);
+        onlineEmplouee_panel.add(listScrollPane);
 
         JPanel warehouse_panel = new JPanel();
         warehouse_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -177,10 +188,11 @@ public class ClientGUIAfterLogin {
         history_panel.add(textArea_2);
 
         frame.setVisible(true);
-    }
-
-
-    public void actionPerformed(ActionEvent e) {
 
     }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
 }

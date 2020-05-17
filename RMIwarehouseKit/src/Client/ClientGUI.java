@@ -86,16 +86,13 @@ public class ClientGUI implements ActionListener {
 
                 clientGUIAfterLogin = new ClientGUIAfterLogin();
                 client = new Client(this, clientGUIAfterLogin, name);
+                clientGUIAfterLogin.setClient(client);
+                clientGUIAfterLogin.Initialize();
 
-                System.out.println("123456");
                 client.connectToServer();
 
-                System.out.println(name.length());
-                System.out.println(textField_1.getText());
-                System.out.println(client.ServerInterface.matchPassword(textField_1.getText()));
 
                 if (name.length() != 0 && client.ServerInterface.matchPassword(textField_1.getText())) {
-                    System.out.println("connecting...");
                     clientGUIAfterLogin.frame.setTitle(name + "'s console ");
                     clientGUIAfterLogin.textArea.setText("");
                     clientGUIAfterLogin.textArea.append(name + " connecting to chat...\n");
