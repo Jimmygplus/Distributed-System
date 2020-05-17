@@ -7,6 +7,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import javax.swing.JOptionPane;
+
 import Server.ServerInterface;
 
 public class Client extends UnicastRemoteObject implements ClientInterface {
@@ -20,6 +21,8 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     private String clientServiceName;
     protected ServerInterface ServerInterface;
     protected boolean connectionProblem = false;
+    private int material;
+    private int product;
 
     /**
      * class constructor,
@@ -50,7 +53,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
         try {
             Naming.rebind("rmi://" + "localhost" + "/" + clientServiceName, this);
-            ServerInterface = (ServerInterface) Naming.lookup("rmi://" + "localhost" + "/" + "GroupChatService");
+            ServerInterface = (ServerInterface) Naming.lookup("rmi://" + "localhost" + "/" + "WarehouseService");
         } catch (ConnectException e) {
             JOptionPane.showMessageDialog(
                     clientGUI.frame, "The server is unavailable\ntry later",
@@ -105,15 +108,23 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
      */
 
     @Override
-    public void updateEmployeeList(String[] currentUsers) throws RemoteException {
+    public void updateEmployeeList(String[] currentEmployees) throws RemoteException {
 
-        if (currentUsers.length < 2) {
+        System.out.println(currentEmployees.length);
+
+        if (currentEmployees.length < 2) {
             clientGUIAfterLogin.privatesendButton.setEnabled(false);
+        } else {
+            clientGUIAfterLogin.privatesendButton.setEnabled(true);
         }
-        clientGUIAfterLogin.chatroom_panel.remove(clientGUIAfterLogin.chatroom_panel);
-        //clientGUIAfterLogin.chatroom_panel.append(currentUsers);
-        clientGUIAfterLogin.chatroom_panel.repaint();
-        clientGUIAfterLogin.chatroom_panel.revalidate();
+        clientGUIAfterLogin.chatroom_panel.remove(clientGUIAfterLogin.onlineEmplouee_panel);
+
+        for(String s : currentEmployees){
+            clientGUIAfterLogin.listModel.addElement(s);
+        }
+
+        clientGUIAfterLogin.onlineEmplouee_panel.repaint();
+        clientGUIAfterLogin.onlineEmplouee_panel.revalidate();
     }
 
 
@@ -125,23 +136,21 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         return name;
     }
 
-    public void sendPrivate(String massage, int[] selectedIndex) {
+    public void sendPrivate(String message, int[] selectedIndex) throws RemoteException {
+        String pMessage = "[PM from " + name + "] :" + message + "\n";
+        this.ServerInterface.sendPrivate(pMessage, selectedIndex);
+    }
+
+    public void getOrder(int type, int amount)throws RemoteException {
+        ServerInterface.getOrder(name, type, amount);
 
     }
 
-    public void sendOder(int material, int product) {
-
+    public void receiveMnP(int numberofM, int numberofP) throws RemoteException {
+        // change gui
     }
 
-    public void updateHistory() throws RemoteException {
-
-    }
-
-    public void recreceiveMnP(int numberofM, int numberofP) throws RemoteException{
-
-    }
-
-    public void receiveHistory(String newRecord) throws RemoteException{
+    public void receiveHistory(String newRecord) throws RemoteException {
 
     }
 }

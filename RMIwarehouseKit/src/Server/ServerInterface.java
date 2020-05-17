@@ -13,14 +13,14 @@ public interface ServerInterface extends Remote {
 
     public void sendPrivate(String privateMessage, int[] selectedIndex) throws RemoteException;
 
-    public String[] loadHistory();
+    public String[] loadHistory() throws RemoteException;
 
-    public int getOrder(String employeeName, int type, int amount);
+    public int getOrder(String employeeName, int type, int amount) throws RemoteException;
 
-    public int getMaterial();
+    public int getMaterial() throws RemoteException;
 
-    public int getProduct();
+    public int getProduct() throws RemoteException;
 
-    public boolean matchPassword(String password);
+    public boolean matchPassword(String password) throws RemoteException;
 
 }

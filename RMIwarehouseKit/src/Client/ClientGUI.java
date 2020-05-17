@@ -102,7 +102,7 @@ public class ClientGUI implements ActionListener {
                     if (!client.connectionProblem) {
                         clientGUIAfterLogin.sendButton.setEnabled(true);
                     }
-                    //frame.setVisible(false);
+                    frame.setVisible(false);
 
                 } else if (!client.ServerInterface.matchPassword(textField_1.getText())) {
                     clientGUIAfterLogin.frame.setVisible(false);

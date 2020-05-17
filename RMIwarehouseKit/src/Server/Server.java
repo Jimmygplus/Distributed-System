@@ -1,9 +1,5 @@
-/**
- *
- */
 package Server;
 
-import Client.Client;
 import Client.ClientInterface;
 
 import java.rmi.NotBoundException;
@@ -11,7 +7,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.util.ArrayList;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Vector;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -40,15 +37,10 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         String hostName = "localhost";
         String serviceName = "WarehouseService";
 
-        if (args.length == 2) {
-            hostName = args[0];
-            serviceName = args[1];
-        }
-
         try {
-            ServerInterface hello = new Server();
-            Naming.rebind("rmi://" + hostName + "/" + serviceName, hello);
-            System.out.println("Warehouse helper is running...");
+            ServerInterface new_Server = new Server();
+            Naming.rebind("rmi://" + hostName + "/" + serviceName, new_Server);
+            System.out.println("RMI Warehouse Kit server is running...");
         } catch (Exception e) {
             System.out.println("Server Not good");
         }
@@ -83,6 +75,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             nextClient.receiveMessage("[Boss] : " + hostDetails[0] + ", U R welcomed\n");
 
             sendToAll("[Boss] : " + hostDetails[0] + " is working.\n");
+
 
             updateEmployeeList();
         } catch (RemoteException | MalformedURLException | NotBoundException e) {
@@ -136,15 +129,18 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
-    private String[] updateEmployeeList() throws RemoteException {
+    private void updateEmployeeList() throws RemoteException {
 
-        String[] allUsers = new String[employees.size()];
+        String[] allUsers = getEmployeeList();
 
-        for (int i = 0; i < allUsers.length; i++) {
-            allUsers[i] = employees.elementAt(i).getName();
+        for (ClientInterface c : employees) {
+            try {
+                c.updateEmployeeList(allUsers);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
-        return allUsers;
     }
 
     public int getOrder(String EmploeeName, int type, int amount) {
@@ -162,9 +158,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
         int numberofM = getMaterial();
         int numberofP = getProduct();
-        try{
+        try {
             updateMnP(numberofM, numberofP);
-        }catch (RemoteException e){
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
 
@@ -232,24 +228,49 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         String product = RWtxt.readTxt("product.txt");
         int productNumber = Integer.parseInt(product);
         productNumber += num;
-        RWtxt.writeTxt("material.txt", String.valueOf(productNumber));
+        RWtxt.writeTxt("product.txt", String.valueOf(productNumber));
         productLock.writeLock().unlock();
     }
 
-    private void updateMnP(int numberofM, int numberofP) throws RemoteException{
+    private void updateMnP(int numberofM, int numberofP) throws RemoteException {
         for (ClientInterface c : employees) {
             try {
-                c.recreceiveMnP(numberofM, numberofP);
+                c.receiveMnP(numberofM, numberofP);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    /**
+     * Encodes a string 2 MD5
+     */
+    public static String crypt(String str) {
+        if (str == null || str.length() == 0) {
+            throw new IllegalArgumentException("String to encript cannot be null or zero length");
+        }
+        StringBuffer hexString = new StringBuffer();
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(str.getBytes());
+            byte[] hash = md.digest();
+            for (int i = 0; i < hash.length; i++) {
+                if ((0xff & hash[i]) < 0x10) {
+                    hexString.append("0" + Integer.toHexString((0xFF & hash[i])));
+                } else {
+                    hexString.append(Integer.toHexString(0xFF & hash[i]));
+                }
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return hexString.toString();
+    }
+
     public boolean matchPassword(String password) {
-        String realPassword = "123456";
+        String realPassword = "e10adc3949ba59abbe56e057f20f883e";
         boolean find;
-        if (password.equals(realPassword)) {
+        if (crypt(password).equals(realPassword)) {
             find = true;
         } else {
             find = false;

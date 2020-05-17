@@ -1,17 +1,16 @@
 package Client;
-import java.awt.Color;
-import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JSpinner;
-import javax.swing.JList;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
+
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.DefaultListModel;
+
+import static java.lang.Integer.parseInt;
+import static java.lang.Math.abs;
 
 public class ClientGUIAfterLogin {
 
@@ -20,7 +19,10 @@ public class ClientGUIAfterLogin {
     private JTextField textField_1;
     protected JTextArea textArea;
     protected JButton privatesendButton, sendButton, ConfirmButton;
-    protected JPanel chatroom_panel;
+    protected JPanel chatroom_panel, onlineEmplouee_panel;
+    private JSpinner spinner_1, spinner_2;
+    protected JList<String> list;
+    protected DefaultListModel<String> listModel;
     /**
      * Launch the application.
      */
@@ -78,9 +80,21 @@ public class ClientGUIAfterLogin {
         chatDisplayArea.setBounds(117, 291, 320, 59);
         chatroom_panel.add(chatDisplayArea);
 
-        JList list = new JList();
-        list.setBounds(10, 74, 97, 194);
-        chatroom_panel.add(list);
+        onlineEmplouee_panel = new JPanel();
+        onlineEmplouee_panel.setBounds(10, 74, 97, 194);
+        frame.getContentPane().add(onlineEmplouee_panel);
+        chatroom_panel.add(onlineEmplouee_panel, BorderLayout.CENTER);
+
+        listModel = new DefaultListModel<String>();
+        list = new JList<String>(listModel);
+        //list.setBounds(10, 74, 97, 194);
+        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        list.setVisibleRowCount(12);
+
+        JScrollPane listScrollPane = new JScrollPane(list);
+        listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        onlineEmplouee_panel.add(listScrollPane, BorderLayout.CENTER);
+        //chatroom_panel.add(listScrollPane, BorderLayout.CENTER);
 
         JPanel warehouse_panel = new JPanel();
         warehouse_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -136,11 +150,11 @@ public class ClientGUIAfterLogin {
         lblNewLabel_8.setBounds(30, 49, 58, 15);
         update_panel.add(lblNewLabel_8);
 
-        JSpinner spinner_1 = new JSpinner();
+        spinner_1 = new JSpinner();
         spinner_1.setBounds(108, 17, 64, 22);
         update_panel.add(spinner_1);
 
-        JSpinner spinner_2 = new JSpinner();
+        spinner_2 = new JSpinner();
         spinner_2.setBounds(108, 46, 64, 22);
         update_panel.add(spinner_2);
 
@@ -163,5 +177,10 @@ public class ClientGUIAfterLogin {
         history_panel.add(textArea_2);
 
         frame.setVisible(true);
+    }
+
+
+    public void actionPerformed(ActionEvent e) {
+
     }
 }
