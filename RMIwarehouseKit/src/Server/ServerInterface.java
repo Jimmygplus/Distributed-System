@@ -21,4 +21,6 @@ public interface ServerInterface extends Remote {
 
     public int getProduct();
 
+    public boolean matchPassword(String password);
+
 }

@@ -51,6 +51,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
 
     }
+
     public static void startRMIRegistry() {
         try {
             java.rmi.registry.LocateRegistry.createRegistry(1099);
@@ -59,6 +60,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             e.printStackTrace();
         }
     }
+
     public void sendToAll(String newMsg) {
         for (ClientInterface c : employees) {
             try {
@@ -68,6 +70,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             }
         }
     }
+
     private void registerEmployee(String[] hostDetails) {
         try {
             ClientInterface nextClient = (ClientInterface) Naming.lookup("rmi://" + hostDetails[1] + "/" + hostDetails[2]);
@@ -84,6 +87,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
 
     }
+
     public void sendPrivate(String privateMessage, int[] privateGroup) {
         ClientInterface individual;
         for (int i : privateGroup) {
@@ -95,22 +99,26 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             }
         }
     }
-    private String[] getEmployeeList() {
+
+    private String[] getEmployeeList() throws RemoteException {
         String[] allEmployees = new String[employees.size()];
         for (int i = 0; i < allEmployees.length; i++) {
             allEmployees[i] = employees.elementAt(i).getName();
         }
         return allEmployees;
     }
+
     public void updateChattingList(String name, String context) {
         String message = name + ":  " + context + "\n";
         sendToAll(message);
     }
+
     @Override
     public void registerListener(String[] hostDetails) throws RemoteException {
         // TODO Auto-generated method stub
         registerEmployee(hostDetails);
     }
+
     @Override
     public void offline(String userName) throws RemoteException {
         for (ClientInterface c : employees) {
@@ -124,7 +132,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             updateEmployeeList();
         }
     }
-    private String[] updateEmployeeList() {
+
+    private String[] updateEmployeeList() throws RemoteException {
 
         String[] allUsers = new String[employees.size()];
 
@@ -134,25 +143,27 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
         return allUsers;
     }
-    public int getOrder(String EmploeeName , int type, int amount) {
+
+    public int getOrder(String EmploeeName, int type, int amount) {
 
         String typeName;
 
-        if(type == 0){
+        if (type == 0) {
             changeMaterial(amount);
             typeName = "material";
-        }else if (type == 1){
+        } else if (type == 1) {
             changeProduct(amount);
             typeName = "product";
-        }else{
+        } else {
             return 0;
         }
         int numberofM = getMaterial();
         int numberofP = getProduct();
         updateMnP(numberofM, numberofP);
-        updateHistory(" "+ EmploeeName + " offered " + typeName + " " + amount );
+        updateHistory(" " + EmploeeName + " offered " + typeName + " " + amount);
         return 1;
     }
+
     public String[] loadHistory() {
         // load text
         historyLock.readLock().lock();
@@ -163,11 +174,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         String[] allHistory = temp.split("/");
         return allHistory;
     }
+
     private void updateHistory(String newRecord) {
         // record to txt
         historyLock.writeLock().lock();
         String temp = RWtxt.readTxt("his.txt");
-        RWtxt.writeTxt("his.txt",temp + newRecord + "/");
+        RWtxt.writeTxt("his.txt", temp + newRecord + "/");
         historyLock.writeLock().unlock();
         // tell everyone
         for (ClientInterface c : employees) {
@@ -178,6 +190,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             }
         }
     }
+
     public int getMaterial() {
 
         materialLock.readLock().lock();
@@ -187,6 +200,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         return materialNumber;
 
     }
+
     private void changeMaterial(int num) {
         materialLock.writeLock().lock();
         String material = RWtxt.readTxt("material.txt");
@@ -195,6 +209,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         RWtxt.writeTxt("material.txt", String.valueOf(materialNumber));
         materialLock.writeLock().unlock();
     }
+
     public int getProduct() {
         productLock.readLock().lock();
         String product = RWtxt.readTxt("product.txt");
@@ -203,6 +218,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         productLock.readLock().unlock();
         return productNumber;
     }
+
     private void changeProduct(int num) {
         productLock.writeLock().lock();
         String product = RWtxt.readTxt("product.txt");
@@ -211,7 +227,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         RWtxt.writeTxt("material.txt", String.valueOf(productNumber));
         productLock.writeLock().lock();
     }
-    private void updateMnP(int numberofM, int numberofP){
+
+    private void updateMnP(int numberofM, int numberofP) {
         for (ClientInterface c : employees) {
             try {
                 c.recreceiveMnP(numberofM, numberofP);
@@ -219,6 +236,17 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean matchPassword(String password) {
+        String realPassword = "123456";
+        boolean find;
+        if (password.equals(realPassword)) {
+            find = true;
+        } else {
+            find = false;
+        }
+        return find;
     }
 
 
