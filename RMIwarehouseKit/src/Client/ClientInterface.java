@@ -8,8 +8,7 @@ public interface ClientInterface extends Remote {
 
     public void updateEmployeeList(String[] currentEmployees) throws RemoteException;
 
-    public String getName();
+    public String getName() throws RemoteException;
 
-    public void updateHistory();
+    public void updateHistory() throws RemoteException;
 }
-

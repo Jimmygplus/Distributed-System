@@ -1,24 +1,23 @@
 package Client;
 
-import Server.ServerInterface;
-
 import java.net.MalformedURLException;
 import java.rmi.ConnectException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.rmi.server.UnicastRemoteObject;
 import javax.swing.JOptionPane;
+import Server.ServerInterface;
 
 public class Client extends UnicastRemoteObject implements ClientInterface {
 
     private static final long serialVersionUID = -389992449104276663L;
-    ClientGUI chatGUI;
-    private String hostName = "localhost";
-    private String serviceName = "GroupChatService";
-    private String clientServiceName;
+    ClientGUI clientGUI;
+    ClientGUIAfterLogin clientGUIAfterLogin;
     private String name;
+    //private String hostName = "localhost";
+    //private String serviceName = "GroupChatService";
+    private String clientServiceName;
     protected ServerInterface ServerInterface;
     protected boolean connectionProblem = false;
 
@@ -30,9 +29,10 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
      * @throws RemoteException
      */
 
-    public Client(ClientGUI aChatGUI, String userName) throws RemoteException {
+    public Client(ClientGUI aChatGUI, ClientGUIAfterLogin newClientGUI, String userName) throws RemoteException {
         super();
-        this.chatGUI = aChatGUI;
+        this.clientGUI = aChatGUI;
+        this.clientGUIAfterLogin = newClientGUI;
         this.name = userName;
         this.clientServiceName = "ClientListenService_" + userName;
     }
@@ -46,14 +46,14 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     public void connectToServer() throws RemoteException {
 
-        String[] details = {name, hostName, clientServiceName};
+        String[] details = {name, "localhost", clientServiceName};
 
         try {
-            Naming.rebind("rmi://" + hostName + "/" + clientServiceName, this);
-            ServerInterface = (ServerInterface) Naming.lookup("rmi://" + hostName + "/" + serviceName);
+            Naming.rebind("rmi://" + "localhost" + "/" + clientServiceName, this);
+            ServerInterface = (ServerInterface) Naming.lookup("rmi://" + "localhost" + "/" + "GroupChatService");
         } catch (ConnectException e) {
             JOptionPane.showMessageDialog(
-                    chatGUI.frame, "The server is unavailable\ntry later",
+                    clientGUI.frame, "The server is unavailable\ntry later",
                     "Connection problem", JOptionPane.ERROR_MESSAGE);
             connectionProblem = true;
             e.printStackTrace();
@@ -88,9 +88,9 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     @Override
     public void receiveMessage(String message) throws RemoteException {
         System.out.println(message);
-        chatGUI.textArea.append(message);
+        clientGUIAfterLogin.textArea.append(message);
         //make the gui display the last appended text, ie scroll to bottom
-        chatGUI.textArea.setCaretPosition(chatGUI.textArea.getDocument().getLength());
+        clientGUIAfterLogin.textArea.setCaretPosition(clientGUIAfterLogin.textArea.getDocument().getLength());
     }
     /**
      * A method to update the display of users
@@ -108,12 +108,12 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     public void updateEmployeeList(String[] currentUsers) throws RemoteException {
 
         if (currentUsers.length < 2) {
-            chatGUI.privateMsgButton.setEnabled(false);
+            clientGUIAfterLogin.privatesendButton.setEnabled(false);
         }
-        chatGUI.userPanel.remove(chatGUI.clientPanel);
-        chatGUI.setClientPanel(currentUsers);
-        chatGUI.clientPanel.repaint();
-        chatGUI.clientPanel.revalidate();
+        clientGUIAfterLogin.chatroom_panel.remove(clientGUIAfterLogin.chatroom_panel);
+        //clientGUIAfterLogin.chatroom_panel.append(currentUsers);
+        clientGUIAfterLogin.chatroom_panel.repaint();
+        clientGUIAfterLogin.chatroom_panel.revalidate();
     }
 
 
@@ -121,7 +121,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         this.ServerInterface.updateChattingList(name, chatMessage);
     }
 
-    public String getName() {
+    public String getName() throws RemoteException {
         return name;
     }
 
@@ -133,7 +133,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     }
 
-    public void updateHistory() {
+    public void updateHistory() throws RemoteException {
 
     }
 }
