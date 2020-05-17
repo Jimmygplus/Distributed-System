@@ -13,9 +13,9 @@ public interface ServerInterface extends Remote {
 
     public void sendPrivate(String privateMessage, int[] selectedIndex) throws RemoteException;
 
-    public void loadHistroy();
+    public String[] loadHistory();
 
-    public int getOrder(int material, int product);
+    public int getOrder(String employeeName, int type, int amount);
 
     public int getMaterial();
 
