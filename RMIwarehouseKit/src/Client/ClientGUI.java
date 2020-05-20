@@ -87,9 +87,8 @@ public class ClientGUI implements ActionListener {
                 clientGUIAfterLogin = new ClientGUIAfterLogin();
                 client = new Client(this, clientGUIAfterLogin, name);
                 clientGUIAfterLogin.setClient(client);
-                clientGUIAfterLogin.Initialize();
-
                 client.connectToServer();
+                clientGUIAfterLogin.Initialize();
 
 
                 if (name.length() != 0 && client.ServerInterface.matchPassword(textField_1.getText())) {

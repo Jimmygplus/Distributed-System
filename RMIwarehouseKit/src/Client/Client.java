@@ -19,7 +19,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     //private String hostName = "localhost";
     //private String serviceName = "GroupChatService";
     private String clientServiceName;
-    protected ServerInterface ServerInterface;
+    public ServerInterface ServerInterface;
     protected boolean connectionProblem = false;
     private int material;
     private int product;
@@ -91,6 +91,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     @Override
     public void receiveMessage(String message) throws RemoteException {
         System.out.println(message);
+        System.out.println(message.length());
         clientGUIAfterLogin.textArea.append(message);
         //make the gui display the last appended text, ie scroll to bottom
         clientGUIAfterLogin.textArea.setCaretPosition(clientGUIAfterLogin.textArea.getDocument().getLength());
@@ -120,6 +121,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
         //clientGUIAfterLogin.chatroom_panel.remove(clientGUIAfterLogin.onlineEmplouee_panel);
         clientGUIAfterLogin.listModel.removeAllElements();
+
         for (String s : currentEmployees) {
             System.out.println(s);
             clientGUIAfterLogin.listModel.addElement(s);
@@ -131,8 +133,9 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
 
-    private void sendToALl(String chatMessage) throws RemoteException {
+    protected void sendToALl(String chatMessage) throws RemoteException {
         this.ServerInterface.updateChattingList(name, chatMessage);
+        System.out.println("+");
     }
 
     public String getName() throws RemoteException {
@@ -140,8 +143,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     public void sendPrivate(String message, int[] selectedIndex) throws RemoteException {
-        String pMessage = "[PM from " + name + "] :" + message + "\n";
-        this.ServerInterface.sendPrivate(pMessage, selectedIndex);
+        this.ServerInterface.sendPrivate(name, message, selectedIndex);
     }
 
     public void getOrder(int type, int amount) throws RemoteException {
@@ -151,9 +153,19 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     public void receiveMnP(int numberofM, int numberofP) throws RemoteException {
         // change gui
+        this.clientGUIAfterLogin.textField.setText(" "+numberofM);
+        this.clientGUIAfterLogin.textField_1.setText(" "+numberofP);
+
+        clientGUIAfterLogin.Currentquantity_panel.repaint();
+        clientGUIAfterLogin.Currentquantity_panel.revalidate();
     }
 
     public void receiveHistory(String newRecord) throws RemoteException {
+
+        this.clientGUIAfterLogin.textArea_2.append(newRecord+"\n");
+
+        clientGUIAfterLogin.onlineEmplouee_panel.repaint();
+        clientGUIAfterLogin.onlineEmplouee_panel.revalidate();
 
     }
 }

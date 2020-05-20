@@ -11,7 +11,7 @@ public interface ServerInterface extends Remote {
 
     public void offline(String userName) throws RemoteException;
 
-    public void sendPrivate(String privateMessage, int[] selectedIndex) throws RemoteException;
+    public void sendPrivate(String name,String privateMessage, int[] selectedIndex) throws RemoteException;
 
     public String[] loadHistory() throws RemoteException;
 
@@ -22,5 +22,6 @@ public interface ServerInterface extends Remote {
     public int getProduct() throws RemoteException;
 
     public boolean matchPassword(String password) throws RemoteException;
+
 
 }
