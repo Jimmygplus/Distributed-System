@@ -16,21 +16,9 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     ClientGUI clientGUI;
     ClientGUIAfterLogin clientGUIAfterLogin;
     private String name;
-    //private String hostName = "localhost";
-    //private String serviceName = "GroupChatService";
     private String clientServiceName;
     public ServerInterface ServerInterface;
     protected boolean connectionProblem = false;
-    private int material;
-    private int product;
-
-    /**
-     * class constructor,
-     * note may also use an overloaded constructor with
-     * a port no passed in argument to super
-     *
-     * @throws RemoteException
-     */
 
     public Client(ClientGUI aChatGUI, ClientGUIAfterLogin newClientGUI, String userName) throws RemoteException {
         super();
@@ -39,13 +27,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         this.name = userName;
         this.clientServiceName = "ClientListenService_" + userName;
     }
-
-    /**
-     * Register our own listening service/interface
-     * lookup the server RMI interface, then send our details
-     *
-     * @throws RemoteException
-     */
 
     public void connectToServer() throws RemoteException {
 
@@ -75,19 +56,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         System.out.println("Client Listen RMI Server is running good...\n");
     }
 
-    /**
-     * pass our username, hostname and RMI service name to
-     * the server to register out interest in joining the chat
-     */
-
-//=====================================================================
-
-    /**
-     * Receive a string from the chat server
-     * this is the clients RMI method, which will be used by the server
-     * to send messages to us
-     */
-
     @Override
     public void receiveMessage(String message) throws RemoteException {
         System.out.println(message);
@@ -96,22 +64,11 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         //make the gui display the last appended text, ie scroll to bottom
         clientGUIAfterLogin.textArea.setCaretPosition(clientGUIAfterLogin.textArea.getDocument().getLength());
     }
-    /**
-     * A method to update the display of users
-     * currently connected to the server
-     */
-
-
-    /**
-     * - name: String
-     * - employeeGUI: ClientGUI
-     * - serverIF: serverInterface
-     */
 
     @Override
     public void updateEmployeeList(String[] currentEmployees) throws RemoteException {
 
-        System.out.println("currentEmployees.length : " + currentEmployees.length);
+        System.out.println("Current Employees number : " + currentEmployees.length);
         /**/
         if (currentEmployees.length < 2) {
             clientGUIAfterLogin.privatesendButton.setEnabled(false);
@@ -119,7 +76,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
             clientGUIAfterLogin.privatesendButton.setEnabled(true);
         }
 
-        //clientGUIAfterLogin.chatroom_panel.remove(clientGUIAfterLogin.onlineEmplouee_panel);
         clientGUIAfterLogin.listModel.removeAllElements();
 
         for (String s : currentEmployees) {

@@ -28,9 +28,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         this.historyLock = new ReentrantReadWriteLock();
     }
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
 
         startRMIRegistry();
@@ -86,8 +83,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     }
 
-    public void sendPrivate(String name , String privateMessage, int[] privateGroup) {
-        String message = " Private Message from : "+name + ":  " + privateMessage + "\n";
+    public void sendPrivate(String name, String privateMessage, int[] privateGroup) {
+        String message = "Private Message from : " + name + ":  " + privateMessage + "\n";
         ClientInterface individual;
         for (int i : privateGroup) {
             individual = employees.elementAt(i);
@@ -139,7 +136,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
         for (ClientInterface c : employees) {
             try {
-                System.out.println("testtt");
                 c.updateEmployeeList(allUsers);
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -168,7 +164,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
 
         updateHistory(" " + EmploeeName + " offered " + typeName + " " + amount);
         return 1;
@@ -202,12 +197,10 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public int getMaterial() {
-        //System.out.println("test1");
         materialLock.readLock().lock();
         String material = RWtxt.readTxt("material.txt");
         int materialNumber = Integer.parseInt(material);
         materialLock.readLock().unlock();
-        //System.out.println("test2");
         return materialNumber;
 
     }
@@ -249,7 +242,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     /**
-     * Encodes a string 2 MD5
+     * Encodes a string to MD5
      */
     public static String crypt(String str) {
         if (str == null || str.length() == 0) {
@@ -283,8 +276,4 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
         return find;
     }
-
-
-
-
 }

@@ -8,12 +8,8 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.DefaultListModel;
-
-import static java.lang.Integer.parseInt;
-import static java.lang.Math.abs;
 
 public class ClientGUIAfterLogin implements ActionListener {
 
@@ -56,7 +52,7 @@ public class ClientGUIAfterLogin implements ActionListener {
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                if(client != null){
+                if (client != null) {
                     try {
                         client.ServerInterface.offline(client.getName());
                     } catch (RemoteException e) {
@@ -77,37 +73,34 @@ public class ClientGUIAfterLogin implements ActionListener {
         chatroom_panel.add(chatDisplayArea);
 
         textArea = new JTextArea();
-        textArea.setBounds(117, 35, 320, 235);
-        chatroom_panel.add(textArea);
-        textArea.setText("what");
-
-
+        JScrollPane chatScroll = new JScrollPane(textArea);
+        chatScroll.setBounds(117, 35, 320, 235);
+        chatScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        chatroom_panel.add(chatScroll);
+        textArea.setEnabled(false);
 
         privatesendButton = new JButton("Send PM");
         privatesendButton.setBounds(10, 292, 97, 23);
         chatroom_panel.add(privatesendButton);
         privatesendButton.addActionListener(this);
 
+        onlineEmplouee_panel = new JPanel();
+        onlineEmplouee_panel.setBounds(10, 74, 100, 194);
+        chatroom_panel.add(onlineEmplouee_panel);
+
         this.listModel = new DefaultListModel<String>();
         list = new JList<String>(listModel);
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        list.setBounds(10, 74, 120, 194);
+        JScrollPane listScrollPane = new JScrollPane(list);
+        listScrollPane.setBounds(10, 74, 120, 194);
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        list.setVisibleRowCount(12);
-
-        onlineEmplouee_panel = new JPanel();
-        onlineEmplouee_panel.setBounds(10, 74, 120, 194);
-        //frame.getContentPane().add(onlineEmplouee_panel);
-        chatroom_panel.add(onlineEmplouee_panel);
-
+        listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        onlineEmplouee_panel.add(listScrollPane);
 
     }
 
 
-
-
     public void Initialize() {
-
 
 
         JLabel lblNewLabel = new JLabel("Chat Room");
@@ -119,15 +112,10 @@ public class ClientGUIAfterLogin implements ActionListener {
         lblNewLabel_1.setBounds(10, 44, 80, 15);
         chatroom_panel.add(lblNewLabel_1);
 
-
         sendButton = new JButton("Send");
         sendButton.setBounds(10, 327, 97, 23);
         chatroom_panel.add(sendButton);
         sendButton.addActionListener(this);
-
-        JScrollPane listScrollPane = new JScrollPane(list);
-        listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        onlineEmplouee_panel.add(listScrollPane);
 
         JPanel warehouse_panel = new JPanel();
         warehouse_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -159,16 +147,14 @@ public class ClientGUIAfterLogin implements ActionListener {
         lblNewLabel_6.setBounds(30, 40, 66, 21);
         Currentquantity_panel.add(lblNewLabel_6);
 
-        //System.out.println("what ");
-
         textField = new JTextField();
-        try{
+        try {
             Client oldclient = this.client;
             System.out.println(oldclient.getName());
             ServerInterface oldIF = oldclient.ServerInterface;
             int MM = oldIF.getMaterial();
-            textField.setText(" "+ MM);
-        }catch (RemoteException e){
+            textField.setText(" " + MM);
+        } catch (RemoteException e) {
             e.getStackTrace();
         }
         textField.setEnabled(false);
@@ -177,13 +163,12 @@ public class ClientGUIAfterLogin implements ActionListener {
         textField.setColumns(10);
 
 
-
         textField_1 = new JTextField();
-        try{
+        try {
             int PP = this.client.ServerInterface.getProduct();
 
-            textField_1.setText(" "+ PP);
-        }catch (RemoteException e){
+            textField_1.setText(" " + PP);
+        } catch (RemoteException e) {
             e.getStackTrace();
         }
         textField_1.setEnabled(false);
@@ -229,17 +214,21 @@ public class ClientGUIAfterLogin implements ActionListener {
         history_panel.add(lblNewLabel_3);
 
         textArea_2 = new JTextArea();
-        textArea_2.setBounds(10, 35, 737, 145);
-        history_panel.add(textArea_2);
-        try{
+        JScrollPane historyScroll = new JScrollPane(textArea_2);
+        historyScroll.setBounds(10, 35, 737, 145);
+        historyScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        history_panel.add(historyScroll);
+        try {
             String[] histories = this.client.ServerInterface.loadHistory();
-            for(String history:histories){
-                textArea_2.append(history+"\n");
+            for (String history : histories) {
+                textArea_2.append(history + "\n");
             }
-        }catch (RemoteException e){
+        } catch (RemoteException e) {
             e.getStackTrace();
         }
         textArea_2.setEnabled(false);
+
 
         frame.setVisible(true);
 
@@ -250,29 +239,28 @@ public class ClientGUIAfterLogin implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        System.out.println("&");
         try {
             //get connected to chat service
             String tempText;
             if (e.getSource() == privatesendButton) {
                 tempText = chatDisplayArea.getText();
                 int[] tempList = this.list.getSelectedIndices();
-                this.client.sendPrivate(tempText,tempList);
+                this.client.sendPrivate(tempText, tempList);
                 chatDisplayArea.setText("");
-            }else if(e.getSource() == sendButton){
+            } else if (e.getSource() == sendButton) {
                 tempText = chatDisplayArea.getText();
                 this.client.sendToALl(tempText);
                 chatDisplayArea.setText("");
-            }else if(e.getSource() == ConfirmButton){
-                int m = (int)spinner_1.getValue();
-                int p = (int)spinner_2.getValue();
-                if(m != 0){
-                    this.client.getOrder(0,m);
+            } else if (e.getSource() == ConfirmButton) {
+                int m = (int) spinner_1.getValue();
+                int p = (int) spinner_2.getValue();
+                if (m != 0) {
+                    this.client.getOrder(0, m);
                 }
-                if(p != 0){
-                    this.client.getOrder(1,p);
+                if (p != 0) {
+                    this.client.getOrder(1, p);
                 }
-            }else{
+            } else {
                 System.out.println("wrong");
             }
         } catch (Exception remoteExc) {
